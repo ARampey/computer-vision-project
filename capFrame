@@ -1,0 +1,39 @@
+# Quit upon 'q' press; draws circle upon left-click; hold and release 'y' to capture frame
+
+import numpy as np
+import cv2
+
+cap = cv2.VideoCapture(0)
+ret,myCapture = cap.read()
+
+color = (255,0,0)
+line_width = 3
+radius = 10
+point = (0,0)
+
+def click(event, x, y, flags, param):
+    global point, pressed
+    if event == cv2.EVENT_LBUTTONDOWN:
+        print("Pressed",x,y)
+        point = (x,y)
+
+cv2.namedWindow("Frame")
+cv2.setMouseCallback("Frame",click)
+
+while(True):
+    if cv2.waitKey(1) == ord('y'): #save on pressing 'y' 
+        cv2.imwrite('images/c1.png',frame)
+        cv2.imshow('img1',frame) #display the captured image
+        cv2.imwrite("frame.jpg", frame)
+        
+    ret, frame = cap.read()
+    frame = cv2.resize(frame, (0,0), fx=0.5,fy=0.5)
+    cv2.circle(frame, point, radius, color, line_width)
+    cv2.imshow("Frame",frame)
+
+    keyPress = cv2.waitKey(2)
+    if keyPress == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
